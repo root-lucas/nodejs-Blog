@@ -1,0 +1,16 @@
+{
+  "name": "nodeJS-Blog",
+  "version": "1.0.0",
+  "description": "后端采用NodeJs实现的简单博客",
+  "main": "bin/www.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=dev nodemon ./bin/www.js",
+    "prd": "cross-env NODE_ENV=production nodemon ./bin/www.js"
+  },
+  "author": "lucas",
+  "license": "MIT",
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "nodemon": "^1.19.1"
+  }
+}
