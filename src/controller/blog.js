@@ -3,7 +3,7 @@ const getList = (author, keyword) => {
     // 注意语句含有空格
     let sql = `select * from blogs where 1=1 `
     if (author) {
-        sql += `an author='${author}' `
+        sql += `and author='${author}' `
     }
     if (keyword) {
         sql += `and title like '%${keyword}' `  
@@ -15,20 +15,29 @@ const getList = (author, keyword) => {
 }
 
 const getDetail = (id) => {
-    // 先返回假数据
-    return {
-        id: 1,
-        title: '标题A',
-        content: '内容A',
-        createTime: 1546461231457,
-        author: 'lucas'
-    }
+    const sql = `select * from blogs where id='${id}'`
+    return exec(sql).then(rows => {
+        return rows[0];
+    })
 }
 
 const newBlog = (blogData = {}) => {
     // blogData 是一个博客对象, 包含 title content 属性
-    console.log('newBlog blogData...', blogData);
+    const title = blogData.title;
+    const content = blogData.content;
+    const author = blogData.author;
+    const createTime = Date.now();
 
+    const sql = `
+        insert into blogs (title, content, createTime, author) 
+        values ('${title}', '${content}', ${createTime}, '${author}');
+    `
+    return exec(sql).then(insertData => {
+        console.log('insertData is ', insertData);
+        return {
+            id: insertData.insertId
+        }
+    })
     return {
         id: 3  // 表示新建博客，插入到数据表里面的 id
     }
@@ -37,13 +46,31 @@ const newBlog = (blogData = {}) => {
 const updateBlog = (id, blogData = {}) => {
     // id 就是要更新博客的 id
     // blogData 是一个博客对象, 包含 title content属性
-    console.log('update blog', id, blogData);
-    return true
+    const title = blogData.title;
+    const content = blogData.content;
+
+    const sql = `
+        update blogs set title='${title}', content='${content}' where id=${id};
+    `
+
+    return exec(sql).then(updateData => {
+        console.log('updateData is ', updateData); // 输出的是对象,属于mysql协议的OK包解析
+        if (updateData.affectedRows > 0) {
+            return true;
+        } 
+        return false;
+    })
 }
 
-const delBlog = (id)=> {
+const delBlog = (id, author)=> {
     // id就是要删除博客的 id
-    return true
+    const sql = `delete from blogs where id='${id}' and author='${author}';`
+    return exec(sql).then(delData => {
+        if (delData.affectedRows > 0) {
+            return true;
+        } 
+        return false;
+    })
 }
 
 module.exports = {
