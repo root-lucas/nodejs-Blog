@@ -1,6 +1,8 @@
 const querystring = require('querystring');
+const { get, set } = require('./src/db/redis');
 const handleBlogRouter = require('./src/router/blog');
 const handleUserRouter = require('./src/router/user');
+
 
 // 获取 cookie 的过期时间
 const getCookieExpires = () => {
@@ -10,8 +12,7 @@ const getCookieExpires = () => {
 }
 
 // session 数据
-const SESSION_DATA = {};
-
+// const SESSION_DATA = {};
 
 // 用于处理 post data
 const getPostData = (req) => {
@@ -65,23 +66,44 @@ const serverHandle = (req, res) => {
         req.cookie[key] = val;
     })
 
-    // 解析 session
+    // // 解析 session
+    // let needSetCookie = false;
+    // let userId = req.cookie.userid;
+    // if (userId) {
+    //     if (!SESSION_DATA[userId]) {
+    //         SESSION_DATA[userId] = {}
+    //     } 
+    // } else {
+    //     needSetCookie = true;
+    //     userId = `${Date.now()}_${Math.random()}`;
+    //     SESSION_DATA[userId] = {}
+    // }
+    // req.session = SESSION_DATA[userId];
+    
+  // 解析session（使用redis）
     let needSetCookie = false;
     let userId = req.cookie.userid;
-    if (userId) {
-        if (!SESSION_DATA[userId]) {
-            SESSION_DATA[userId] = {}
-        } 
-    } else {
+    if (!userId) {
         needSetCookie = true;
         userId = `${Date.now()}_${Math.random()}`;
-        SESSION_DATA[userId] = {}
+        // 初始化redis 中session的初始值
+        set(userId, {});
     }
-    req.session = SESSION_DATA[userId];
-    
-
-    // 处理 post data
-    getPostData(req).then(postData => {
+    req.sessionId = userId;
+    get(req.sessionId)
+    .then(sessionData => {
+        if (!sessionData) {
+            // 初始化redis 中session的初始值
+            set(req.sessionId, {});
+            // 设置session
+            req.session = {};
+        } else {
+            req.session = sessionData;
+        }
+        console.log("req.session:", req.session);
+        return getPostData(req);
+    })
+    .then(postData => {
         req.body = postData;
 
         // 处理 blog 路由
@@ -132,7 +154,6 @@ const serverHandle = (req, res) => {
         res.write('404 Not Found\n');
         res.end();
     })
-
 } 
 
 module.exports = serverHandle;
