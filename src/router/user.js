@@ -17,7 +17,7 @@ const handleUserRouter = (req, res) => {
                 // 设置 session
                 req.session.username = data.username;
                 req.session.realname = data.realname;
-                console.log('req.session is ', req.session);
+                // console.log('req.session is ', req.session);
                 // 同步到 redis
                 // console.log(req.session)
                 set(req.sessionId, req.session)

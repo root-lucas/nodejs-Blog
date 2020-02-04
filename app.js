@@ -104,7 +104,7 @@ const serverHandle = (req, res) => {
         } else {
             req.session = sessionData;
         }
-        console.log("req.session:", req.session);
+        // console.log("req.session:", req.session);
         return getPostData(req);
     })
     .then(postData => {

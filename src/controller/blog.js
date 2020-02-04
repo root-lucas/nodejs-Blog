@@ -1,4 +1,6 @@
+const xss = require('xss');
 const { exec } = require('../db/mysql');
+
 const getList = (author, keyword) => {
     // 注意语句含有空格
     let sql = `select * from blogs where 1=1 `
@@ -23,7 +25,8 @@ const getDetail = (id) => {
 
 const newBlog = (blogData = {}) => {
     // blogData 是一个博客对象, 包含 title content 属性
-    const title = blogData.title;
+    const title = xss(blogData.title);  // 使用 xss 模块防御xss攻击
+    // console.log('title is ', title);
     const content = blogData.content;
     const author = blogData.author;
     const createTime = Date.now();
