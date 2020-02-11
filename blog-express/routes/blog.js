@@ -47,7 +47,7 @@ router.get('/detail', (req, res, next) => {
 });
 
 // 新建一篇博客
-router.post('/new', loginCheck, (req, res, next) => {
+router.post('/new', loginCheck,(req, res, next) => {
     req.body.author = req.session.username;
     const result = newBlog(req.body);
     return result.then(data => {   

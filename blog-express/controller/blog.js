@@ -8,7 +8,7 @@ const getList = (author, keyword) => {
         sql += `and author='${author}' `
     }
     if (keyword) {
-        sql += `and title like '%${keyword}' `  
+        sql += `and title like '%${keyword}%' `  
     }
     sql += `order by createtime desc;` // 数据倒序返回
 
@@ -49,6 +49,7 @@ const newBlog = (blogData = {}) => {
 const updateBlog = (id, blogData = {}) => {
     // id 就是要更新博客的 id
     // blogData 是一个博客对象, 包含 title content属性
+    // 注意! 这里传入的 req.body 是 x-www.form-urlencoded 格式
     const title = blogData.title;
     const content = blogData.content;
 
