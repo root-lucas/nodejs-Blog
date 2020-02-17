@@ -1,0 +1,21 @@
+const crypto = require('crypto');
+
+// 密匙(加密的密匙, 一定要保存好)
+const SECRET_KEY = 'hello_world';
+
+// md5 加密
+function md5(content) {
+    let md5 = crypto.createHash('md5');
+    // 对 (password=123&key=hello_world) 字符进行加密
+    return md5.update(content).digest('hex');
+}
+
+// 加密函数
+function genPassword(password) {
+    const  str = `password=${password}&key=${SECRET_KEY}`;
+    return md5(str);
+}
+
+module.exports = {
+  genPassword
+}
