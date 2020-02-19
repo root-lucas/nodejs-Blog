@@ -1,0 +1,21 @@
+{
+    "apps": {
+        "name": "pm2-test-server",
+        "script": "app.js",
+        "cwd": "./",
+        "watch": [
+            "./app.js"
+        ],
+        "ignore_watch": [       
+            "./node_modules",
+            "./logs"
+        ],
+        "instances": 4,
+        "error_file": "logs/err.log",
+        "out_file": "logs/out.log",
+        "log_date_format": "YYY-MM-DD HH:mm:ss",
+        "env": {
+            "NODE_ENV": "production"
+        }
+    }
+}
