@@ -65,8 +65,9 @@ app.use(session({
   },
   // 配置 redis
   store: redisStore({
-    all: '127.0.0.1:6379'
-    // all: `${REDIS_CONF.host}:${REDIS_CONF.port}`
+    // all: '127.0.0.1:6379'
+    host:'127.0.0.1',
+    port:6379
   })
 }));
 
